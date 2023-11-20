@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+</head>
+
+<body>
+    <h1>Weather Station</h1>
+
+    <div class="row" style="margin-bottom: 16px">
+        <p class = "lead"> Temperature: {{weather[-1]['temperature']}}
+        </p>
+    </div>
+  <div class="row" style="margin-bottom: 16px">
+      <p class = "lead"> Humidity: {{weather[-1]['humidity']}}
+      </p>
+  </div>
+  <div class="row" style="margin-bottom: 16px">
+      <p class = "lead"> Report Time: {{weather[-1]['timestamp']}}
+      </p>
+  </div>
+
+    <div id="analysis-result"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+      function collectAndSubmitData() {
+          // Call postDataToSupabase to submit data to Supabase
+          postDataToSupabase(getRandomTemperature(), getRandomHumidity());
+      }
+
+      function postDataToSupabase(temperature, humidity) {
+          fetch('/post_data_to_supabase', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  temperature: temperature,
+                  humidity: humidity,
+              }),
+          })
+          .then(response => response.json())
+          .then(data => console.log('Data sent to Supabase:', data))
+          .catch(error => console.error('Error sending data to Supabase:', error));
+      }
+
+      // Collect and submit data every 1 hour
+      setInterval(collectAndSubmitData, 3600000);
+
+      function getRandomTemperature() {
+          return (Math.random() * 30).toFixed(2);
+      }
+
+      function getRandomHumidity() {
+          return (Math.random() * 100).toFixed(2);
+      }
+  </script>
+
+</body>
+
+</html>
