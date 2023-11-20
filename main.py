@@ -16,8 +16,9 @@ table_name = 'weather'
 start_time = datetime.now()
 last_upload_time = start_time
 
-def fetch_data_from_database():
-  response = supabase.table("weather").select("id", "temperature", "humidity", "timestamp", count='exact').execute()
+
+def fetch_data_from_database(table_name):
+  response = supabase.table(table_name).select("id", "temperature", "humidity", "timestamp", count='exact').execute()
 
   if hasattr(response, 'data') and 'error' in response.data:
         print("Error fetching data:", response.data['error'])
@@ -51,7 +52,7 @@ def format_number(number):
 def get_data():
   try:
       # Fetch data from Supabase or any other source
-      data = fetch_data_from_database()
+      data = fetch_data_from_database(table_name)
       return jsonify(data)
   except Exception as e:
       print(f"Error fetching data: {e}")
@@ -89,9 +90,7 @@ def index():
 
   global last_upload_time
   # Retrieve data from Supabase
-  weather = fetch_data_from_database()
-
-  ##else: False, 'Not yet time for the next upload'
+  weather = fetch_data_from_database(table_name)
     
   return render_template('index.html', weather=weather)
 
