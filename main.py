@@ -91,8 +91,9 @@ def index():
   global last_upload_time
   # Retrieve data from Supabase
   weather = fetch_data_from_database(table_name)
+  analyze = analyze_data(weather[-1]['temperature'])
     
-  return render_template('index.html', weather=weather)
+  return render_template('index.html', weather=weather, analyze=analyze)
 
     
 # Simple data analysis function
